@@ -58,15 +58,7 @@ public class ConfirmationPage extends WebPage {
         return this;
     }
 
-    public Date getOrderDate() throws ParseException {
-        // Устанавливаем формат даты, для парсинга строки с датой на странице брони
-        SimpleDateFormat formatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
-        // парсим дату полученную со страницы
-        Date orderDate =  formatter.parse(receipt.getOrderDateValue());
-        return orderDate;
-    }
-
-    public ConfirmationPage checkOrderDate(Date date) throws ParseException {
+    public ConfirmationPage checkOrderDate() throws ParseException {
         // т.к. время генерации страницы с бронью может незначительно отличаться от времени полученного во время
         // выполнения теста, то нам приходится сравнивать разницу временных меток
         // нам нужно чтобы разница во времени составляла меньше 10 секунд
@@ -74,7 +66,8 @@ public class ConfirmationPage extends WebPage {
         // вычитаем из времени, полученного со страницы время полученное при выполнении теста
         // т.к. время указывается в милисекундах, то делим полученную разницу на 1000
         // проверяем, чтобы разница временных меток была меньше 10 секунд
-        assertTrue((Math.abs(getOrderDate().getTime() - date.getTime())/1000) < VALID_DIFFERENCE);
+        Date date = new Date();
+        assertTrue((Math.abs(receipt.getOrderDate().getTime() - date.getTime())/1000) < VALID_DIFFERENCE);
 
         return this;
     }

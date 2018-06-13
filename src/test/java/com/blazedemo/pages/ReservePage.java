@@ -1,10 +1,13 @@
 package com.blazedemo.pages;
 
+import com.blazedemo.common.FlightIsNotChosenException;
 import com.blazedemo.sections.FlightsList;
 import com.epam.jdi.uitests.web.selenium.elements.composite.WebPage;
 import com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.JPage;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import ru.otus.utils.TestStorage;
+
 import java.util.Map;
 
 import static org.testng.AssertJUnit.assertEquals;
@@ -42,23 +45,8 @@ public class ReservePage extends WebPage {
         return this;
     }
 
-    public ReservePage submitFlight(){
+    public ReservePage submitFlight() throws FlightIsNotChosenException {
         flightsList.submitFlight();
-        return this;
-    }
-
-    public ReservePage saveFlightNumToMap(Map map, String key){
-        map.put(key, flightsList.getFlightNum());
-        return this;
-    }
-
-    public ReservePage savePriceToMap(Map map, String key){
-        map.put(key, flightsList.getPrice());
-        return this;
-    }
-
-    public ReservePage saveAirlineCoToMap(Map map, String key){
-        map.put(key, flightsList.getAirlineCo());
         return this;
     }
 
@@ -74,6 +62,12 @@ public class ReservePage extends WebPage {
 
     public ReservePage checkToPortValue(String toPortValue){
         assertEquals(getToPortValue(), toPortValue);
+        return this;
+    }
+
+    public ReservePage checkHiddenFields(){
+        checkFromPortValue( TestStorage.getString("fromPortValue") );
+        checkToPortValue( TestStorage.getString("toPortValue") );
         return this;
     }
 }

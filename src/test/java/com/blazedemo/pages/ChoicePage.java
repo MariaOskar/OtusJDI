@@ -8,6 +8,8 @@ import com.epam.jdi.uitests.web.selenium.elements.composite.WebPage;
 import com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.JPage;
 import org.openqa.selenium.support.FindBy;
 import ru.otus.utils.TestHelper;
+import ru.otus.utils.TestStorage;
+
 import java.util.List;
 import java.util.Map;
 
@@ -49,13 +51,18 @@ public class ChoicePage extends WebPage {
         submit.click();
     }
 
-    public ChoicePage saveFromPortValueToMap(Map map, String key){
-        map.put(key, getRandomFromOption());
+    public ChoicePage selectRandomFromPort(){
+        String value = getRandomFromOption();
+        TestStorage.map.put("fromPortValue", value);
+        departureDropdown.select(value);
         return this;
     }
 
-    public ChoicePage saveToPortValueToMap(Map map, String key){
-        map.put(key, getRandomToOption());
+    public ChoicePage selectRandomToPort(){
+        String value = getRandomToOption();
+        TestStorage.map.put("toPortValue", value);
+        destinationDropdown.select(value);
         return this;
     }
+
 }

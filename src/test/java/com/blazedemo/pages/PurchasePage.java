@@ -50,9 +50,4 @@ public class PurchasePage extends WebPage {
     public void submit(){
         form.submit();
     }
-
-    public PurchasePage saveCardTypeValueToMap(Map map, String key){
-        map.put(key, form.getCardTypeValueRandom());
-        return this;
-    }
 }

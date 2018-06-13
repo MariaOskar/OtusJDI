@@ -1,60 +1,84 @@
 package com.blazedemo.sections;
 
+import com.blazedemo.common.FlightIsNotChosenException;
+import com.blazedemo.common.TableRowIndexOutOfBoundException;
+import com.epam.jdi.uitests.web.selenium.elements.complex.table.Table;
 import com.epam.jdi.uitests.web.selenium.elements.composite.Section;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
+import com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.objects.JTable;
 import org.openqa.selenium.support.FindBy;
 import ru.otus.utils.TestHelper;
-
+import ru.otus.utils.TestStorage;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class FlightsList extends Section {
 
-    private static  final By FLIGHT = By.cssSelector("input[name=flight]");
-    private static  final By PRICE = By.cssSelector("input[name=price]");
-    private static  final By AIRLINE = By.cssSelector("input[name=airline]");
-    private static  final By SUBMIT = By.cssSelector("td input[type=submit]");
+    @JTable(root = @FindBy(css = "table.table"))
+    Table table;
 
-    private WebElement flight;
+    private int rowNum = 0;
 
-    @FindBy(css = "table.table tbody tr")
-    private List<WebElement> flights;
-
-    public String getFlightNum(){
-        if (flight!= null) return flight.findElement(FLIGHT).getAttribute("value");
-        return null;
+    public String getFlightNum() throws FlightIsNotChosenException {
+        checkIfFlightNumExists();
+        return table.cell(2,rowNum).getText();
     }
 
-    public float getPrice(){
-        if (flight!=null) return Float.parseFloat(flight.findElement(PRICE).getAttribute("value"));
-        return 0;
+    public float getPrice() throws FlightIsNotChosenException, TableRowIndexOutOfBoundException {
+        checkIfFlightNumExists();
+        return getPrice(rowNum);
     }
 
-    public String getAirlineCo(){
-        if (flight!=null) return flight.findElement(AIRLINE).getAttribute("value");
-        return null;
+    public float getPrice( int row ) throws TableRowIndexOutOfBoundException {
+        if( row < 1 || row > table.rows().count())
+            throw new TableRowIndexOutOfBoundException("В таблице нет строки с индексом "+row);
+        return Float.parseFloat(table.cell(6, row).getText().substring(1));
     }
 
-    public void submitFlight(){
-        if (flight!=null) flight.findElement(SUBMIT).click();
+    public String getAirlineCo() throws FlightIsNotChosenException {
+        checkIfFlightNumExists();
+        return table.cell(3,rowNum).getText();
+    }
+
+    public void submitFlight() throws FlightIsNotChosenException {
+        checkIfFlightNumExists();
+        table.cell(1,rowNum).click();
     }
 
     public void selectFilteredFlight(float maxPrice){
-        // фильтрация вылетов с помощью Java 8
-        List<WebElement> filteredFlights = flights
-                .stream()
-                .filter((webElement)->{
-                    String priceToken = webElement.findElement(PRICE).getAttribute("value");
-                    float price = Float.parseFloat(priceToken.replace("$",""));
-                    return price < maxPrice;
-                }).collect(Collectors.toList());
-        if(filteredFlights.size()>0){
-            flight = filteredFlights.get(0);
+        List<Integer> filteredFlights = new ArrayList<Integer>();
+        try {
+            for(int i=1; i <= table.rows().count(); i++){
+                if (getPrice(i)<maxPrice){
+                    filteredFlights.add(i);
+                }
+            }
+            if(filteredFlights.size()>0){
+                rowNum = filteredFlights.get(0);
+                TestStorage.put("airline", getAirlineCo());
+                TestStorage.put("price", getPrice());
+                TestStorage.put("flightNum", getFlightNum());
+            }
+        } catch (FlightIsNotChosenException e) {
+            e.printStackTrace();
+        } catch (TableRowIndexOutOfBoundException e) {
+            e.printStackTrace();
         }
     }
 
     public void selectRandomFlight(){
-        flight = flights.get(TestHelper.random(0, flights.size() - 1));
+        rowNum = TestHelper.random(1,table.rows().count());
+        try {
+            TestStorage.put("airline", getAirlineCo());
+            TestStorage.put("price", getPrice());
+            TestStorage.put("flightNum", getFlightNum());
+        } catch (FlightIsNotChosenException e) {
+            e.printStackTrace();
+        } catch (TableRowIndexOutOfBoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void checkIfFlightNumExists() throws FlightIsNotChosenException {
+        if (rowNum == 0) throw new FlightIsNotChosenException("Не выбран рейс");
     }
 }

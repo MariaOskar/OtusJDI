@@ -8,6 +8,7 @@ import com.epam.jdi.uitests.web.selenium.elements.common.TextField;
 import com.epam.jdi.uitests.web.selenium.elements.composite.Section;
 import org.openqa.selenium.support.FindBy;
 import ru.otus.utils.TestHelper;
+import ru.otus.utils.TestStorage;
 
 import java.util.List;
 
@@ -42,6 +43,12 @@ public class OrderForm extends Section {
         return options.get(TestHelper.random(0, options.size() - 1));
     }
 
+    public void selectRandomCardType(){
+        String value = getCardTypeValueRandom();
+        TestStorage.put("cardTypeValue",value);
+        cardTypeDropdown.select(value);
+    }
+
     public void selectCardType(String value){
         cardTypeDropdown.select(value);
     }
@@ -65,6 +72,7 @@ public class OrderForm extends Section {
         creditCardYear.sendKeys(orderParams.getYear());
         nameOnCard.clear();
         nameOnCard.sendKeys(orderParams.getNameOnCard());
+        selectRandomCardType();
     }
 
     public void submit(){
