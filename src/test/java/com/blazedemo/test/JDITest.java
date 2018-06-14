@@ -1,20 +1,26 @@
 package com.blazedemo.test;
 
+import com.automation.remarks.testng.VideoListener;
+import com.automation.remarks.video.annotations.Video;
 import com.blazedemo.BaseTest;
 import com.blazedemo.common.FlightIsNotChosenException;
+import com.blazedemo.data.DepartureEnum;
+import com.blazedemo.data.DestinationEnum;
+import com.blazedemo.listeners.TestListener;
 import com.blazedemo.model.OrderParams;
 import com.blazedemo.util.builder.OrderParamsBuilder;
 import com.blazedemo.util.builder.RandomOrderParamsBuilder;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import ru.otus.utils.TestStorage;
-
 import java.text.ParseException;
-import java.util.*;
 import static com.blazedemo.BlazeDemoSite.*;
 
+@Listeners(value = {TestListener.class, VideoListener.class})
 public class JDITest extends BaseTest {
 
     @Test
+    @Video(name = "blazedemo_test")
     public void test() throws ParseException, FlightIsNotChosenException {
         OrderParams orderParams = buildOrderParams(new RandomOrderParamsBuilder());
         float maxPrice = 300;
@@ -44,6 +50,20 @@ public class JDITest extends BaseTest {
                 .checkIdText()
                 .checkCardNumber(orderParams.getCardNumber())
                 .checkOrderDate()
+        ;
+    }
+
+    @Test
+    public void negativeTest(){
+        choicePage.open();
+        choicePage
+                .selectFrom(DepartureEnum.BOSTON.city())
+                .selectTo(DestinationEnum.BUENOS_AIRES.city())
+                .submit();
+        reservePage
+                .checkOpenedPage()
+                .checkFromPortValue(DepartureEnum.MEXICO_CITY.city())
+                .checkToPortValue(DestinationEnum.BERLIN.city())
         ;
     }
 

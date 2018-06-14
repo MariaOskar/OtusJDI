@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Otus" verbose="1" >
+    <listeners>
+        <listener class-name="com.blazedemo.listeners.TestListener" />
+    </listeners>
+
+    <test name="BlazeDemo">
+        <packages>
+            <package name="com.blazedemo.test"></package>
+        </packages>
+    </test>
+</suite>
