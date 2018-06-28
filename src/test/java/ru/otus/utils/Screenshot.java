@@ -1,5 +1,6 @@
 package ru.otus.utils;
 
+import io.qameta.allure.Allure;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -18,7 +19,10 @@ public class Screenshot {
         File scrFile = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-            FileUtils.copyFile(scrFile, new File("target\\screenshots\\"+format.format(new Date())+".png"));
+            String filename = "screenshot_"+format.format(new Date())+".png";
+            FileUtils.copyFile(scrFile, new File("target\\screenshots\\"+filename));
+            byte[] content= FileUtils.readFileToByteArray(scrFile);
+            Allure.addByteAttachmentAsync( filename, "image/png", ()->content );
         } catch (IOException e) {
             e.printStackTrace();
         }

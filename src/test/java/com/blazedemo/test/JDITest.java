@@ -10,8 +10,11 @@ import com.blazedemo.listeners.TestListener;
 import com.blazedemo.model.OrderParams;
 import com.blazedemo.util.builder.OrderParamsBuilder;
 import com.blazedemo.util.builder.RandomOrderParamsBuilder;
+import io.qameta.allure.Description;
+import io.qameta.allure.Issue;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
+import ru.otus.utils.Screenshot;
 import ru.otus.utils.TestStorage;
 import java.text.ParseException;
 import static com.blazedemo.BlazeDemoSite.*;
@@ -20,7 +23,9 @@ import static com.blazedemo.BlazeDemoSite.*;
 public class JDITest extends BaseTest {
 
     @Test
+    @Issue("BD-100")
     @Video(name = "blazedemo_test")
+    @Description("Поиск рейса и оформление заказа на blazedemo.com")
     public void test() throws ParseException, FlightIsNotChosenException {
         OrderParams orderParams = buildOrderParams(new RandomOrderParamsBuilder());
         float maxPrice = 300;
@@ -29,11 +34,13 @@ public class JDITest extends BaseTest {
                 .selectRandomFromPort()
                 .selectRandomToPort()
                 .submit();
+        Screenshot.take(); // для отчета Allure
         reservePage
                 .checkOpenedPage()
                 .checkHiddenFields()
                 .selectFilteredFlight(maxPrice)
                 .submitFlight();
+        Screenshot.take(); // для отчета Allure
         purchasePage
                 .checkFlightNumberText( TestStorage.getString("flightNum") )
                 .checkAirlineText( TestStorage.getString("airline") )
@@ -41,6 +48,7 @@ public class JDITest extends BaseTest {
                 .checkTotalPrice( TestStorage.getFloat("price") )
                 .fillForm(orderParams)
                 .submit();
+        Screenshot.take(); // для отчета Allure
         confirmationPage
                 .waitUntilPageLoaded() //данный wait предназначен только для браузера Microsoft EDGE, который не дожидается загрузки страницы
                 .checkStatusText("PendingCapture")
@@ -51,6 +59,7 @@ public class JDITest extends BaseTest {
                 .checkCardNumber(orderParams.getCardNumber())
                 .checkOrderDate()
         ;
+        Screenshot.take(); // для отчета Allure
     }
 
     @Test

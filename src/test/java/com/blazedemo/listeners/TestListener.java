@@ -12,6 +12,7 @@ import org.testng.ITestListener;
 import org.testng.ITestResult;
 import ru.otus.utils.PropertyHelper;
 import ru.otus.utils.Screenshot;
+import ru.otus.utils.Traffic;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +33,10 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onTestSuccess(ITestResult iTestResult) {
-
+        String trafficFlag = PropertyHelper.getProperty("test.properties","test.traffic");
+        if(trafficFlag!=null && trafficFlag.equals("1")){
+            Traffic.write();
+        }
     }
 
     @Override
@@ -41,6 +45,11 @@ public class TestListener implements ITestListener {
         String screenshotFlag = PropertyHelper.getProperty("test.properties","test.screenshots");
         if(screenshotFlag!=null && screenshotFlag.equals("1")){
             Screenshot.take();
+        }
+
+        String trafficFlag = PropertyHelper.getProperty("test.properties","test.traffic");
+        if(trafficFlag!=null && trafficFlag.equals("1")){
+            Traffic.write();
         }
 
         String logsFlag = PropertyHelper.getProperty("test.properties","test.logs");
@@ -76,19 +85,6 @@ public class TestListener implements ITestListener {
 
     @Override
     public void onFinish(ITestContext iTestContext) {
-        String flag = PropertyHelper.getProperty("test.properties","test.traffic");
-        if(flag!=null && flag.equals("1")){
-            StringBuffer buffer = new StringBuffer();
-            LogEntries logEntries = getDriver().manage().logs().get(LogType.PERFORMANCE);
-            for(LogEntry logEntry: logEntries){
-                buffer.append(logEntry.getLevel()+" "+logEntry.getMessage()+"\r\n");
-            }
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-            try {
-                FileUtils.write(new File("target\\traffic\\"+format.format(new Date())+".txt"),buffer.toString(),"UTF-8");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+
     }
 }

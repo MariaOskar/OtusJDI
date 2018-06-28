@@ -3,6 +3,7 @@ package com.blazedemo.pages;
 import com.blazedemo.sections.Receipt;
 import com.epam.jdi.uitests.web.selenium.elements.composite.WebPage;
 import com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.JPage;
+import io.qameta.allure.Step;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.text.ParseException;
@@ -27,30 +28,37 @@ public class ConfirmationPage extends WebPage {
         return this;
     }
 
+    @Step("Проверяем статус заказа")
     public ConfirmationPage checkStatusText(String statusText){
         assertEquals(statusText, receipt.getStatusText());
         return this;
     }
 
+    @Step("Проверяем валюту")
     public ConfirmationPage checkAmountText(String amountText){
         assertEquals(amountText, receipt.getAmountText());
         return this;
     }
 
+    @Step("Проверяем дату окончания действия банковской карты")
     public ConfirmationPage checkExpirationText(String expirationText){
         assertEquals(expirationText, receipt.getExpirationText());
         return this;
     }
 
+    @Step("Проверяем код авторизации")
     public ConfirmationPage checkAuthCodeText(String authCodeText){
         assertEquals(authCodeText, receipt.getAuthCodeText());
         return this;
     }
+
+    @Step("Проверяем идентефикатор")
     public ConfirmationPage checkIdText(){
         assertTrue(receipt.getIdText().trim().length() > 0);
         return this;
     }
 
+    @Step("Проверяем номер банковской карты")
     public ConfirmationPage checkCardNumber(String cardNumber){
         String ActualCardNumberToken = cardNumber.substring( cardNumber.length() - 4 );
         String CurrentCardNumberToken = receipt.getCardNumberVal().substring( receipt.getCardNumberVal().length() - 4);
@@ -58,6 +66,7 @@ public class ConfirmationPage extends WebPage {
         return this;
     }
 
+    @Step("Проверяем дату заказа")
     public ConfirmationPage checkOrderDate() throws ParseException {
         // т.к. время генерации страницы с бронью может незначительно отличаться от времени полученного во время
         // выполнения теста, то нам приходится сравнивать разницу временных меток

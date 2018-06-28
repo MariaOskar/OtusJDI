@@ -4,6 +4,7 @@ import com.blazedemo.common.FlightIsNotChosenException;
 import com.blazedemo.sections.FlightsList;
 import com.epam.jdi.uitests.web.selenium.elements.composite.WebPage;
 import com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.JPage;
+import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import ru.otus.utils.TestStorage;
@@ -40,11 +41,13 @@ public class ReservePage extends WebPage {
         return this;
     }
 
+    @Step("Фильтруем список рейсов и выбираем один из них")
     public ReservePage selectFilteredFlight(float maxPrice){
         flightsList.selectFilteredFlight(maxPrice);
         return this;
     }
 
+    @Step("Подтверждаем выбор рейса и переходим на страницу оформления заказа")
     public ReservePage submitFlight() throws FlightIsNotChosenException {
         flightsList.submitFlight();
         return this;
@@ -65,6 +68,7 @@ public class ReservePage extends WebPage {
         return this;
     }
 
+    @Step("Проверяем значения скрытых полей")
     public ReservePage checkHiddenFields(){
         checkFromPortValue( TestStorage.getString("fromPortValue") );
         checkToPortValue( TestStorage.getString("toPortValue") );

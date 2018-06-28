@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import static com.epam.jdi.uitests.web.settings.WebSettings.useDriver;
 
 public class BaseTest extends TestNGBase {
-    @BeforeSuite()
+    @BeforeSuite(description = "Создание драйвера и инициализация сайта")
     public static void setUp() throws IOException {
         String flag = PropertyHelper.getProperty("test.properties","test.traffic");
         if(flag!=null && flag.equals("1")){

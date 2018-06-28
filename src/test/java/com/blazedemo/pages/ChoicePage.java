@@ -6,6 +6,7 @@ import com.epam.jdi.uitests.core.interfaces.complex.IDropDown;
 import com.epam.jdi.uitests.web.selenium.elements.common.Button;
 import com.epam.jdi.uitests.web.selenium.elements.composite.WebPage;
 import com.epam.jdi.uitests.web.selenium.elements.pageobjects.annotations.JPage;
+import io.qameta.allure.Step;
 import org.openqa.selenium.support.FindBy;
 import ru.otus.utils.TestHelper;
 import ru.otus.utils.TestStorage;
@@ -47,10 +48,12 @@ public class ChoicePage extends WebPage {
         return this;
     }
 
+    @Step("Отправляем форму для поиска подходящих рейсов")
     public void submit(){
         submit.click();
     }
 
+    @Step("Выбираем произвольный пункт отправки")
     public ChoicePage selectRandomFromPort(){
         String value = getRandomFromOption();
         TestStorage.map.put("fromPortValue", value);
@@ -58,6 +61,7 @@ public class ChoicePage extends WebPage {
         return this;
     }
 
+    @Step("Выбираем произвольный пункт назначения")
     public ChoicePage selectRandomToPort(){
         String value = getRandomToOption();
         TestStorage.map.put("toPortValue", value);
