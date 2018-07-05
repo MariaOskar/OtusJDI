@@ -5,8 +5,10 @@
     </listeners>
 
     <test name="BlazeDemo">
-        <packages>
-            <package name="com.blazedemo.test"></package>
-        </packages>
+        <classes>
+            <class name="com.blazedemo.test.JDITest"></class>
+            <class name="dummy.test.DummyTest"></class>
+            <class name="dummy.test.DummyTest2"></class>
+        </classes>
     </test>
 </suite>
