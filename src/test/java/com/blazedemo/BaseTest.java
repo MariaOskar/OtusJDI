@@ -18,12 +18,14 @@ import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import ru.otus.utils.PropertyHelper;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.logging.Level;
 
 import static com.epam.jdi.uitests.web.settings.WebSettings.useDriver;
@@ -33,19 +35,21 @@ public class BaseTest extends TestNGBase {
     @BeforeMethod(description = "Создание драйвера и инициализация сайта")
     public static void setUp() throws IOException {
         String flag = PropertyHelper.getProperty("test.properties","test.traffic");
-        if(flag!=null && flag.equals("1")){
 
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        capabilities.setBrowserName( PropertyHelper.getProperty("test.properties", "selenoid.browser.name") );
+        capabilities.setVersion( PropertyHelper.getProperty("test.properties", "selenoid.browser.version") );
+        capabilities.setCapability("enableVNC",true);
+        if(flag!=null && flag.equals("1")) {
             LoggingPreferences loggingPreferences = new LoggingPreferences();
             loggingPreferences.enable(LogType.PERFORMANCE, Level.INFO);
-
-            ChromeOptions options = new ChromeOptions();
-            options.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
-
-            driverContainer.set(new ChromeDriver(options));
-
-            WebSite.init(useDriver(()->driverContainer.get()),BlazeDemoSite.class);
-        }else{
-            WebSite.init(BlazeDemoSite.class);
+            capabilities.setCapability(CapabilityType.LOGGING_PREFS, loggingPreferences);
         }
+        driverContainer.set(new RemoteWebDriver(
+                URI.create(PropertyHelper.getProperty("test.properties", "selenoid.uri")).toURL(),
+                capabilities
+        ));
+
+        WebSite.init(useDriver(()->driverContainer.get()),BlazeDemoSite.class);
     }
 }
