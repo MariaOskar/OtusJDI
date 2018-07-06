@@ -83,6 +83,9 @@
                     </argLine>
                     <parallel>methods</parallel>
                     <threadCount>5</threadCount>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>src\test\resources\testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
                 </configuration>
                 <dependencies>
                     <dependency>
