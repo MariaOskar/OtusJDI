@@ -36,10 +36,21 @@ public class BaseTest extends TestNGBase {
     public static void setUp() throws IOException {
         String flag = PropertyHelper.getProperty("test.properties","test.traffic");
 
+        String browserName = PropertyHelper.getProperty("test.properties", "selenoid.browser.name");
+        String browserVersion = PropertyHelper.getProperty("test.properties", "selenoid.browser.version");
+
         DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setBrowserName( PropertyHelper.getProperty("test.properties", "selenoid.browser.name") );
-        capabilities.setVersion( PropertyHelper.getProperty("test.properties", "selenoid.browser.version") );
-        capabilities.setCapability("enableVNC",true);
+        capabilities.setBrowserName(browserName);
+        capabilities.setVersion(browserVersion);
+
+        if(browserName.equals("opera")) {
+            capabilities.setCapability("operaOptions", new HashMap<String, Object>(){
+                {
+                    put("binary", "/usr/bin/opera");
+                }
+            });
+        }
+        
         if(flag!=null && flag.equals("1")) {
             LoggingPreferences loggingPreferences = new LoggingPreferences();
             loggingPreferences.enable(LogType.PERFORMANCE, Level.INFO);
